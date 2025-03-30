@@ -97,11 +97,3 @@
 *   [ ] Use Celery/Redis for more robust background task processing.
 *   [ ] Improve prompt engineering for different query types.
 *   [ ] Add unit and integration tests.
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request or open an Issue. (Add more specific guidelines if desired).
-
-## 📜 License
-
-This project is licensed under the MIT License - see the LICENSE file (if created) for details.
