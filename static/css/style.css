@@ -1,0 +1,438 @@
+/* === CSS Variables (Light Mode Defaults) === */
+:root {
+    --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --color-text: #1f2937; /* Gray 800 */
+    --color-text-muted: #6b7280; /* Gray 500 */
+    --color-text-subtle: #9ca3af; /* Gray 400 */
+    --color-bg-page: #ffffff;
+    --color-bg-chat: #ffffff;
+    --color-bg-input: #ffffff;
+    --color-border: #e5e7eb; /* Gray 200 */
+    --color-border-input: #d1d5db; /* Gray 300 */
+    --color-user-message-bg: #f3f4f6; /* Gray 100 */
+    --color-bot-message-bg: #ffffff; /* White for bot message */
+    --color-icon: #6b7280; /* Gray 500 */
+    --color-icon-hover: #374151; /* Gray 700 */
+    --color-button-send-bg: #374151; /* Gray 700 */
+    --color-button-send-hover: #1f2937; /* Gray 800 */
+    --color-success: #10b981; /* Emerald 500 */
+    --color-error: #ef4444; /* Red 500 */
+    --color-info: #3b82f6; /* Blue 500 */
+    --color-bg-tooltip: #ffffff; /* Pop-up background */
+    --color-bg-hover: #f3f4f6; /* Gray 100 for hover */
+    --scrollbar-thumb: #d1d5db;
+    --scrollbar-thumb-hover: #9ca3af;
+
+    --border-radius-msg: 0.75rem; /* 12px */
+    --border-radius-input: 0.5rem; /* 8px */
+    --shadow-input: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-popover: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --max-content-width: 860px;
+}
+
+/* --- DARK MODE VARIABLES --- */
+html.dark-mode {
+    --color-text: #d1d5db; /* Gray 300 */
+    --color-text-muted: #9ca3af; /* Gray 400 */
+    --color-text-subtle: #6b7280; /* Gray 500 */
+    --color-bg-page: #111827; /* Gray 900 */
+    --color-bg-chat: #1f2937; /* Gray 800 - Slightly lighter chat area */
+    --color-bg-input: #374151; /* Gray 700 - Input background */
+    --color-border: #374151; /* Gray 700 */
+    --color-border-input: #4b5563; /* Gray 600 */
+    --color-user-message-bg: #374151; /* Gray 700 */
+    --color-bot-message-bg: #1f2937; /* Gray 800 */
+    --color-icon: #9ca3af; /* Gray 400 */
+    --color-icon-hover: #d1d5db; /* Gray 300 */
+    --color-button-send-bg: #d1d5db; /* Gray 300 */
+    --color-button-send-hover: #e5e7eb; /* Gray 200 */
+    --color-bg-tooltip: #374151; /* Darker pop-up */
+    --color-bg-hover: #4b5563; /* Darker hover */
+    --scrollbar-thumb: #4b5563;
+    --scrollbar-thumb-hover: #6b7280;
+    --shadow-input: 0 1px 2px 0 rgb(0 0 0 / 0.25); /* Adjust shadow */
+    --shadow-popover: 0 4px 12px rgba(0, 0, 0, 0.35); /* Adjust shadow */
+}
+
+/* --- Global Reset & Base --- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+    font-family: var(--font-family-sans);
+    background-color: var(--color-bg-page);
+    color: var(--color-text);
+    line-height: 1.7;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out; /* Theme transition */
+}
+
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Full viewport height */
+    width: 100%;
+    max-width: var(--max-content-width); /* Limit content width */
+    overflow: hidden; /* Prevent scrollbars on wrapper */
+    position: relative; /* Context for theme toggle */
+}
+
+#theme-toggle-button { /* Use the ID selector */
+    position: fixed;   /* Position relative to viewport */
+    top: 1rem;         /* Distance from top */
+    right: 1rem;        /* Distance from right */
+    left: auto;         /* Ensure left isn't set */
+    z-index: 110;      /* Keep on top */
+
+    /* Inherit base styles from .icon-button for consistency if desired */
+    /* Or repeat necessary styles here if you removed .theme-toggle class */
+    display: inline-flex; /* Copied from .icon-button */
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-bg-input); /* Added for visibility */
+    border: none;
+    padding: 0.5rem;
+    margin: 0;
+    border-radius: 50%;
+    box-shadow: var(--shadow-input); /* Added for visibility */
+    cursor: pointer;
+    color: var(--color-icon);
+    transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+}
+
+/* Keep icon visibility rules targeting the ID */
+#theme-toggle-button .icon-sun { display: block; }
+#theme-toggle-button .icon-moon { display: none; }
+html.dark-mode #theme-toggle-button .icon-sun { display: none; }
+html.dark-mode #theme-toggle-button .icon-moon { display: block; }
+
+/* Optional: Keep hover effect targeting ID */
+#theme-toggle-button:hover {
+    color: var(--color-icon-hover);
+    background-color: var(--color-bg-hover);
+}
+
+/* --- Chat Area --- */
+.chat-area-wrapper {
+    flex-grow: 1;
+    overflow-y: auto; /* Scroll messages */
+    padding: 4rem 1rem 0 1rem; /* Adjust top padding for theme button */
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-bg-chat);
+    transition: background-color 0.2s ease-in-out;
+}
+
+.message-area {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem; /* More space between message blocks */
+    padding-bottom: 1rem; /* Space at the bottom */
+    width: 100%;
+}
+
+/* Custom Scrollbar */
+.chat-area-wrapper::-webkit-scrollbar { width: 8px; }
+.chat-area-wrapper::-webkit-scrollbar-track { background: transparent; }
+.chat-area-wrapper::-webkit-scrollbar-thumb { background-color: var(--scrollbar-thumb); border-radius: 4px; }
+.chat-area-wrapper::-webkit-scrollbar-thumb:hover { background-color: var(--scrollbar-thumb-hover); }
+
+
+/* --- Message Bubbles --- */
+.message-wrapper {
+    display: flex; /* Use flex for icon + bubble alignment */
+    flex-direction: column; /* Stack bubble and timestamp */
+    gap: 0.3rem; /* Space between bubble and timestamp */
+    width: 100%;
+    max-width: 95%; /* Prevent full width */
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeInMessage 0.4s ease-out forwards;
+}
+.message-wrapper.user { align-items: flex-end; margin-left: auto; }
+.message-wrapper.bot { align-items: flex-start; margin-right: auto; }
+
+@keyframes fadeInMessage { to { opacity: 1; transform: translateY(0); } }
+
+.message-wrapper .icon { display: none; } /* Hide icon div for cleaner look */
+
+/* Container for message text/math segments */
+.message {
+    padding: 0.8rem 1.1rem;
+    border-radius: var(--border-radius-msg);
+    line-height: 1.6;
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-input);
+    width: fit-content; /* Make bubble only as wide as needed */
+    max-width: 100%;   /* Allow bubble to take up wrapper width if needed */
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+.message-wrapper.user .message {
+    background-color: var(--color-user-message-bg);
+    color: var(--color-text);
+    border-color: transparent;
+    border-bottom-right-radius: 0.375rem; /* Tail */
+}
+.message-wrapper.bot .message {
+    background-color: var(--color-bot-message-bg);
+    color: var(--color-text);
+    border-color: var(--color-border);
+    border-bottom-left-radius: 0.375rem; /* Tail */
+}
+
+/* Styling for individual text/formula segments */
+.message-segment {
+    word-wrap: break-word;
+    display: block; /* Ensure segments stack */
+}
+
+.message-text-block {
+    padding: 0.1rem 0; /* Vertical padding for text lines */
+    clear: both;
+}
+
+/* Styles for formula blocks */
+.message-formula-block {
+    text-align: center;
+    margin: 0.75em 0; /* Vertical space around */
+    clear: both;
+    overflow-x: auto;
+    padding: 0.5em 0;
+}
+
+/* Ensure KaTeX display math itself behaves */
+.message-formula-block .katex-display {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block;
+}
+
+/* Timestamp Styling */
+.timestamp {
+    font-size: 0.7rem;
+    color: var(--color-text-subtle);
+    padding: 0 0.5rem; /* Add padding for spacing */
+    width: fit-content;
+    transition: color 0.2s ease-in-out;
+    /* Alignment handled by message-wrapper align-items */
+}
+
+/* --- Input Area --- */
+.input-area-wrapper {
+    padding: 1rem 1rem 1.5rem 1rem;
+    background: linear-gradient(180deg, rgba(255,255,255,0) 0%, var(--color-bg-page) 15%); /* Fade uses page background */
+    flex-shrink: 0;
+    border-top: 1px solid var(--color-border);
+    position: relative; /* Context for popup */
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+html.dark-mode .input-area-wrapper {
+    background: linear-gradient(180deg, rgba(17, 24, 39, 0) 0%, var(--color-bg-page) 15%); /* Use dark page background */
+}
+
+.upload-status-dynamic {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    min-height: 1.1em;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    transition: color 0.2s ease-in-out;
+}
+.upload-status-dynamic.success { color: var(--color-success); font-weight: 500; }
+.upload-status-dynamic.error { color: var(--color-error); font-weight: 500; }
+.upload-status-dynamic.info { color: var(--color-info); }
+
+.message-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border: 1px solid var(--color-border-input);
+    border-radius: var(--border-radius-input);
+    background-color: var(--color-bg-input);
+    box-shadow: var(--shadow-input);
+    position: relative; /* Positioning context for popup */
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+/* Textarea Styling */
+#messageText {
+    flex-grow: 1;
+    border: none;
+    outline: none;
+    padding: 0.6rem 0.5rem;
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.5;
+    background-color: transparent;
+    resize: none;
+    max-height: 150px;
+    overflow-y: auto;
+    color: var(--color-text);
+    transition: color 0.2s ease-in-out;
+}
+#messageText::placeholder { color: var(--color-text-subtle); transition: color 0.2s ease-in-out; }
+
+/* Icon Button Styling */
+.icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border: none;
+    padding: 0.5rem;
+    margin: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--color-icon);
+    transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    position: relative; /* For spinner positioning */
+}
+.icon-button:hover {
+    color: var(--color-icon-hover);
+    background-color: var(--color-bg-hover);
+}
+.icon-button:disabled {
+    color: var(--color-text-subtle) !important; /* Use !important if needed */
+    cursor: not-allowed;
+    background-color: transparent !important;
+    opacity: 0.6;
+}
+.icon-button svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Specific Button States & Colors */
+.send-button {
+    background-color: var(--color-button-send-bg);
+    color: var(--color-bg-page); /* Icon color contrast */
+}
+.send-button:hover {
+    background-color: var(--color-button-send-hover);
+    color: var(--color-bg-page);
+}
+.send-button:disabled {
+    background-color: #d1d5db !important; /* Specific disabled color */
+    color: #9ca3af !important;
+    opacity: 1;
+}
+html.dark-mode .send-button:disabled {
+     background-color: #4b5563 !important; /* Dark mode disabled color */
+     color: #6b7280 !important;
+}
+
+.cancel-button { background-color: var(--color-error); color: white; }
+.cancel-button:hover { background-color: #dc2626; color: white; }
+
+/* --- Pop-up Menu Styling --- */
+.popup-menu {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 0.5rem);
+    left: 0.75rem;
+    background-color: var(--color-bg-tooltip);
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-popover);
+    padding: 0.5rem;
+    min-width: 180px;
+    z-index: 100;
+    opacity: 0;
+    transform: translateY(5px);
+    transition: opacity 0.15s ease-out, transform 0.15s ease-out, background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+.popup-menu.popup-active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+.popup-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 0.375rem;
+    font-size: 0.9rem;
+    color: var(--color-text);
+    transition: background-color 0.15s ease-in-out, color 0.2s ease-in-out;
+    white-space: nowrap;
+}
+.popup-menu-item svg {
+    width: 16px;
+    height: 16px;
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+    transition: color 0.2s ease-in-out;
+}
+.popup-menu-item:hover {
+    background-color: var(--color-bg-hover);
+}
+
+/* --- Footer --- */
+.app-footer {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--color-text-subtle);
+    margin-top: 1rem;
+    padding-bottom: env(safe-area-inset-bottom);
+    transition: color 0.2s ease-in-out;
+}
+
+/* --- Spinner --- */
+.spinner {
+    display: none; /* Hidden by default */
+    border: 2px solid rgba(255, 255, 255, 0.3); /* Spinner color */
+    border-radius: 50%;
+    border-top-color: currentColor; /* Use parent color */
+    width: 18px;
+    height: 18px;
+    animation: spin 1s linear infinite;
+    position: absolute; /* Center inside button */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+}
+/* Show spinner when send button is disabled */
+#sendButton:disabled .spinner { display: inline-block; }
+/* Hide the icon when spinner is shown */
+#sendButton:disabled svg { visibility: hidden; }
+
+/* Dark mode spinner */
+html.dark-mode .spinner {
+    border: 2px solid rgba(55, 65, 81, 0.5); /* Darker base */
+    border-top-color: currentColor;
+}
+
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* --- Responsiveness --- */
+@media (max-width: 640px) {
+    body { padding: 0; }
+    .page-wrapper { max-width: 100%; }
+    .chat-area-wrapper { padding-top: 4rem; } /* Ensure space for button */
+    .input-area-wrapper { padding: 0.75rem; }
+    .message-form { padding: 0.5rem; gap: 0.5rem; }
+    #messageText { padding: 0.5rem; }
+    .icon-button { width: 34px; height: 34px; padding: 0.4rem;}
+    .icon-button svg { width: 18px; height: 18px; }
+    .app-footer { font-size: 0.7rem; }
+    .popup-menu { left: 0.5rem; }
+    .theme-toggle { top: 0.75rem; right: 0.75rem; }
+}
