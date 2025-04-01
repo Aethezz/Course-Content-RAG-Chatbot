@@ -1,20 +1,19 @@
 // --- Get Element References ---
 const messageArea = document.getElementById('message-area');
-const messageInput = document.getElementById('messageText'); // Now a textarea
+const messageInput = document.getElementById('messageText'); 
 const messageForm = document.getElementById('messageForm');
 const sendButton = document.getElementById('sendButton');
-// const sendButtonText = document.getElementById('sendButtonText'); // Removed text span
 const cancelButton = document.getElementById('cancelButton');
-const spinner = document.getElementById('spinner'); // Send button spinner
+const spinner = document.getElementById('spinner'); 
 const themeToggleButton = document.getElementById('theme-toggle-button');
-const rootHtmlElement = document.documentElement; // Target <html> for theme class
+const rootHtmlElement = document.documentElement; 
 
 // New Upload Elements
 const uploadTriggerButton = document.getElementById('uploadTriggerButton');
 const popupMenu = document.getElementById('popupMenu');
 const popupUploadOption = document.getElementById('popupUploadOption');
-const fileInput = document.getElementById('fileInput'); // Hidden input
-const dynamicUploadStatus = document.getElementById('dynamicUploadStatus'); // Status near input
+const fileInput = document.getElementById('fileInput'); 
+const dynamicUploadStatus = document.getElementById('dynamicUploadStatus'); 
 
 let websocket = null;
 let isWaitingForBot = false;
@@ -23,12 +22,12 @@ let isUploading = false; // Flag to prevent double uploads
 function applyTheme(theme) {
     if (theme === 'dark') {
         rootHtmlElement.classList.add('dark-mode');
-        themeToggleButton?.setAttribute('aria-pressed', 'true'); // Update accessibility state
+        themeToggleButton?.setAttribute('aria-pressed', 'true'); 
     } else {
         rootHtmlElement.classList.remove('dark-mode');
         themeToggleButton?.setAttribute('aria-pressed', 'false');
     }
-    // Persist the choice
+
     try {
         localStorage.setItem('theme', theme);
     } catch (e) {
@@ -46,14 +45,11 @@ function toggleTheme() {
 
 // --- Initial Theme Setup ---
 function initializeTheme() {
-    // This function is less critical now due to the inline script in <head>,
-    // but we can keep it to set the button's initial aria-pressed state correctly.
     try {
         const theme = localStorage.getItem('theme');
         const isOsDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
         const currentTheme = theme ? theme : (isOsDark ? 'dark' : 'light');
 
-        // Ensure button state matches actual applied theme
          if(themeToggleButton) {
             themeToggleButton.setAttribute('aria-pressed', currentTheme === 'dark' ? 'true' : 'false');
          }
@@ -98,11 +94,9 @@ if (messageInput) {
         }
     });
 
-    // Auto-resize the textarea on input
     messageInput.addEventListener('input', adjustTextareaHeight);
 }
 
-// --- WebSocket Connect/Message/Error/Close (Largely unchanged) ---
 function connectWebSocket() {
     console.log("Attempting to connect WebSocket to:", wsUrl);
     if (websocket && websocket.readyState === WebSocket.OPEN) return;
@@ -110,15 +104,15 @@ function connectWebSocket() {
 
     websocket.onopen = function(event) {
         console.log("WebSocket connection established");
-        addMessage("Bot: Ask me anything!", "bot-message"); // Simpler welcome
+        addMessage("Bot: Ask me anything!", "bot-message"); 
         resetUIState();
     };
 
     websocket.onmessage = function(event) {
         console.log("Raw data received:", event.data);
         let messageText = event.data;
-        let messageClass = messageText.startsWith("Bot:") ? "bot-message" : "user-message"; // Assume Bot: prefix
-        addMessage(messageText.replace(/^Bot:\s*/, ''), messageClass); // Add message, remove prefix
+        let messageClass = messageText.startsWith("Bot:") ? "bot-message" : "user-message"; 
+        addMessage(messageText.replace(/^Bot:\s*/, ''), messageClass); 
 
         if (messageClass === 'bot-message' && isWaitingForBot) {
            resetUIState();
@@ -134,7 +128,7 @@ function addMessage(message, cssClass) {
     messageWrapper.className = `message-wrapper ${cssClass.includes('user') ? 'user' : 'bot'}`;
     const iconDiv = document.createElement('div');
     iconDiv.className = 'icon';
-    messageWrapper.appendChild(iconDiv); // Append icon (even if hidden by CSS)
+    messageWrapper.appendChild(iconDiv); 
 
     // --- Main Message Bubble Container ---
     const messageContentContainer = document.createElement('div');
@@ -147,12 +141,12 @@ function addMessage(message, cssClass) {
     if (filteredParts.length === 0 && message.trim() !== '') {
          filteredParts.push(message);
     } else if (filteredParts.length === 0 && message.trim() === '') {
-         return; // Don't add empty
+         return; 
     }
 
     // --- Process Each Part and Create Segment Divs ---
     filteredParts.forEach(part => {
-        const segmentElement = document.createElement('div'); // *** USE DIV FOR SEGMENTS ***
+        const segmentElement = document.createElement('div'); 
 
         if (part.startsWith('$$') && part.endsWith('$$')) {
             // It's a display math block
@@ -226,8 +220,6 @@ function sendMessage(event) {
         console.log("<<< websocket.send called.");
         addMessage(`You: ${message}`, "user-message");
 
-        // Optional: add user message locally (if backend doesn't echo)
-        // addMessage(message, "user-message");
         messageInput.value = '';
         adjustTextareaHeight(); // Reset height after sending
     } else { /* ... error handling ... */ }
@@ -241,7 +233,7 @@ function resetUIState(cancelled = false) {
         uploadTriggerButton.disabled = false;
         sendButton.disabled = false;
     }
-    // Restore Send button icon
+
     sendButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-up"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>`;
     cancelButton.style.display = 'none';
 
@@ -257,10 +249,9 @@ cancelButton.addEventListener('click', () => {
     }
 });
 
-// 1. Toggle pop-up when trigger button is clicked
 if (uploadTriggerButton && popupMenu) {
     uploadTriggerButton.addEventListener('click', (event) => {
-        event.stopPropagation(); // Prevent click from immediately closing menu via document listener
+        event.stopPropagation(); 
         if (isUploading || isWaitingForBot) return; // Don't open if busy
 
         const isActive = popupMenu.classList.contains('popup-active');
@@ -272,7 +263,6 @@ if (uploadTriggerButton && popupMenu) {
     });
 }
 
-// 2. Handle click on "Upload File" option in the pop-up
 if (popupUploadOption && fileInput) {
     popupUploadOption.addEventListener('click', () => {
         console.log("Upload file option clicked");
@@ -281,7 +271,6 @@ if (popupUploadOption && fileInput) {
     });
 }
 
-// 3. Close pop-up if clicked outside
 document.addEventListener('click', (event) => {
     if (popupMenu && popupMenu.classList.contains('popup-active')) {
         // Check if the click was outside the menu AND outside the trigger button
@@ -322,7 +311,6 @@ async function uploadFile(file) {
 
         if (response.ok && response.status === 202) {
             setDynamicUploadStatus(`Processing "${result.filename}"...`, "success");
-            // Optionally hide status after a delay
             setTimeout(() => setDynamicUploadStatus(""), 5000);
         } else {
             const errorDetail = result.detail || `Server error ${response.status}`;
@@ -355,23 +343,15 @@ function setDynamicUploadStatus(message, type = "") { // type: info, success, er
 function adjustTextareaHeight() {
     messageInput.style.height = 'auto'; // Reset height
     let scrollHeight = messageInput.scrollHeight;
-    // Consider border/padding if needed:
-    // let style = window.getComputedStyle(messageInput);
-    // let borderTop = parseInt(style.borderTopWidth, 10);
-    // let borderBottom = parseInt(style.borderBottomWidth, 10);
-    // scrollHeight += borderTop + borderBottom;
 
-    // Set height capped at max-height from CSS
     messageInput.style.height = `${scrollHeight}px`;
 }
 
 if(messageInput) {
     messageInput.addEventListener('input', adjustTextareaHeight);
-    // Adjust on initial load in case there's pre-filled text (unlikely here)
     // adjustTextareaHeight();
 }
 
 // --- Initial Setup ---
 initializeTheme(); // Set initial theme based on localStorage or OS preference
 connectWebSocket();
-// fetchCollectionInfo(); // Removed as the display div was removed

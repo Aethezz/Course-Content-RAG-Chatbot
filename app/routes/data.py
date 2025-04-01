@@ -20,12 +20,10 @@ async def upload_document(
     if not file.filename:
          raise HTTPException(status_code=400, detail="No filename provided.")
 
-    # Ensure uploads directory exists (config should handle this, but double-check)
     os.makedirs(settings.UPLOADS_DIR, exist_ok=True)
-
+ 
     temp_file_path = Path(settings.UPLOADS_DIR) / file.filename
     try:
-        # Save the uploaded file temporarily
         with temp_file_path.open("wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
         print(f"File saved temporarily to: {temp_file_path}")
@@ -36,10 +34,9 @@ async def upload_document(
         return {
             "filename": file.filename,
             "message": "File received and scheduled for processing.",
-            "temp_path": str(temp_file_path) # Optional: return path for debugging
+            "temp_path": str(temp_file_path) 
         }
     except Exception as e:
-        # Clean up if saving failed
         if temp_file_path.exists():
             os.remove(temp_file_path)
         raise HTTPException(
@@ -47,14 +44,12 @@ async def upload_document(
             detail=f"Could not save or schedule file processing: {e}",
         )
     finally:
-        # Ensure the file object is closed
         await file.close()
 
 @router.get("/collections")
 async def get_collections_info():
     """ Gets basic info about the ChromaDB collection. """
     try:
-        # Note: Accessing the raw client, not the LangChain wrapper here for metadata
         import chromadb
         client = chromadb.PersistentClient(path=settings.VECTOR_STORE_PATH)
         collection = client.get_collection(name=settings.CHROMA_COLLECTION_NAME)

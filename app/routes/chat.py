@@ -15,8 +15,6 @@ from app.core.config import settings # Make sure settings is imported
 # ... (websocket endpoint) ...
 
 # Configure templates
-# It's often better to initialize templates in main.py and pass via Depends
-# but for simplicity here, we initialize directly. Make sure the path is correct.
 templates = Jinja2Templates(directory="templates")
 
 router = APIRouter()
@@ -37,7 +35,6 @@ class ConnectionManager:
             print(f"Connection closed: {websocket.client}. Total: {len(self.active_connections)}")
 
     async def send_personal_message(self, message: str, websocket: WebSocket):
-        # ... (implementation as before) ...
         try:
             await websocket.send_text(message)
         except RuntimeError as e:
@@ -47,7 +44,6 @@ class ConnectionManager:
             print(f"Unexpected error sending message: {e}")
             await self.safe_disconnect(websocket)
 
-    # --- ENSURE THIS METHOD IS PRESENT ---
     async def safe_disconnect(self, websocket: WebSocket):
         """Disconnects safely, ignoring errors if already closed."""
         self.disconnect(websocket) # Remove from list first
@@ -62,9 +58,6 @@ class ConnectionManager:
 
 # --- Create ONE instance of the manager ---
 manager = ConnectionManager()
-
-# In app/routes/chat.py
-# ... (imports and manager code) ...
 
 @router.get("/", tags=["Chat Interface"])
 async def get_chat_page(request: Request):
@@ -95,7 +88,6 @@ async def websocket_endpoint(websocket: WebSocket):
 
     except WebSocketDisconnect:
         # Log the disconnect reason if available
-        # print(f"[{client_addr}] WebSocket disconnected. Reason: {websocket.client_state}, Code: {websocket.application_state}") # Might need different attrs
         print(f"[{client_addr}] WebSocket disconnected.")
         manager.disconnect(websocket) # Call disconnect from manager
 

@@ -86,17 +86,15 @@ body {
     left: auto;         /* Ensure left isn't set */
     z-index: 110;      /* Keep on top */
 
-    /* Inherit base styles from .icon-button for consistency if desired */
-    /* Or repeat necessary styles here if you removed .theme-toggle class */
     display: inline-flex; /* Copied from .icon-button */
     align-items: center;
     justify-content: center;
-    background-color: var(--color-bg-input); /* Added for visibility */
+    background-color: var(--color-bg-input); 
     border: none;
     padding: 0.5rem;
     margin: 0;
     border-radius: 50%;
-    box-shadow: var(--shadow-input); /* Added for visibility */
+    box-shadow: var(--shadow-input); 
     cursor: pointer;
     color: var(--color-icon);
     transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;

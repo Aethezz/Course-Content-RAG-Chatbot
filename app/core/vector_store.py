@@ -1,7 +1,5 @@
-# --- app/core/vector_store.py (Using Recommended PersistentClient) ---
 import os
 import chromadb
-# from chromadb.config import Settings as ChromaSettings # <-- No longer needed for this init
 
 # --- Use the chosen embedding class ---
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -21,13 +19,11 @@ except Exception as e:
      print(f"!!! Error initializing HuggingFaceEmbeddings: {e}")
      raise RuntimeError(f"Failed to initialize embeddings: {e}") from e
 
-# --- Initialize ChromaDB Client using the NEW Recommended PersistentClient ---
 os.makedirs(settings.VECTOR_STORE_PATH, exist_ok=True) # Ensure path exists
 
 try:
     print(f"Attempting to initialize ChromaDB PersistentClient at: {settings.VECTOR_STORE_PATH}")
 
-    # NEW WAY: Use PersistentClient and just provide the path
     chroma_client = chromadb.PersistentClient(
         path=settings.VECTOR_STORE_PATH
         # Optional: Pass settings ONLY if needed, e.g., for telemetry
@@ -48,8 +44,6 @@ except Exception as e:
     print("!!! Please check ChromaDB documentation and ensure the path is accessible and valid.")
     raise RuntimeError(f"Failed to initialize ChromaDB: {e}") from e
 
-
-# --- LangChain Vector Store Wrapper (remains the same) ---
 try:
     vector_store = Chroma(
         client=chroma_client, # Pass the configured PersistentClient
